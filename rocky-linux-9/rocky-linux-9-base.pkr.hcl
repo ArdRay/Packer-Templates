@@ -82,12 +82,11 @@ variable "version" {
 # build blocks. A build block runs provisioner and post-processors on a
 # source. Read the documentation for source blocks here:
 # https://www.packer.io/docs/templates/hcl_templates/blocks/source
-# could not parse template for following block: "template: hcl2_upgrade:26: unexpected \"}\" in operand"
 
 source "proxmox" "rocky-linux-9-base" {
   username            = "${var.proxmox_api_token_id}"
   token               = "${var.proxmox_api_token_secret}"
-  boot_command        = ["<tab> text inst.ks=http://10.10.2.100:8000/rl9-base.ks<enter><wait>"]
+  boot_command        = ["<tab> text inst.ks=https://raw.githubusercontent.com/ArdRay/packer_templates/master/rocky-linux-9/http/rl9-base.ks<enter><wait>"]
   boot_wait           = "2s"
   cores               = "2"
   cpu_type            = "host"

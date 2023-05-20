@@ -20,7 +20,7 @@ keyboard --vckeymap=us --xlayouts='us'
 lang en_US.UTF-8
 
 # Network information
-network  --bootproto=dhcp --ipv6=auto --activate
+network  --bootproto=dhcp --ipv6=auto --activate --onboot=yes
 #network  --hostname=test.int.mxard.cloud
 repo --name="AppStream" --baseurl=file:///run/install/repo/AppStream
 
