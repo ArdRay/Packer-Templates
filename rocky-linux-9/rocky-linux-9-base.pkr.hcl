@@ -87,7 +87,7 @@ source "proxmox" "rocky-linux-9-base" {
   username            = "${var.proxmox_api_token_id}"
   token               = "${var.proxmox_api_token_secret}"
   boot_command        = ["<tab> text inst.ks=https://raw.githubusercontent.com/ArdRay/packer_templates/master/rocky-linux-9/http/rl9-base.ks<enter><wait>"]
-  boot_wait           = "2s"
+  boot_wait           = "4s"
   cores               = "2"
   cpu_type            = "host"
   disks {

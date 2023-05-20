@@ -67,6 +67,7 @@ openssh-clients
 sudo
 kexec-tools
 curl
+
 # allow for ansible
 python3
 python3-libselinux
@@ -107,53 +108,53 @@ python3-libselinux
 
 
 # this is installed by default but we don't need it in virt
-echo "Removing linux-firmware package."
-yum -C -y remove linux-firmware
+# echo "Removing linux-firmware package."
+# yum -C -y remove linux-firmware
 
 # Remove firewalld; it is required to be present for install/image building.
-echo "Removing firewalld."
-yum -C -y remove firewalld --setopt="clean_requirements_on_remove=1"
+# echo "Removing firewalld."
+# yum -C -y remove firewalld --setopt="clean_requirements_on_remove=1"
 
 # remove avahi and networkmanager
-echo "Removing avahi/zeroconf and NetworkManager"
-yum -C -y remove avahi\* 
+# echo "Removing avahi/zeroconf and NetworkManager"
+# yum -C -y remove avahi\* 
 
-echo -n "Getty fixes"
+# echo -n "Getty fixes"
 # although we want console output going to the serial console, we don't
 # actually have the opportunity to login there. FIX.
 # we don't really need to auto-spawn _any_ gettys.
-sed -i '/^#NAutoVTs=.*/ a\
-NAutoVTs=0' /etc/systemd/logind.conf
+# sed -i '/^#NAutoVTs=.*/ a\
+# NAutoVTs=0' /etc/systemd/logind.conf
 
 # set virtual-guest as default profile for tuned
-echo "virtual-guest" > /etc/tuned/active_profile
+# echo "virtual-guest" > /etc/tuned/active_profile
 
 # Because memory is scarce resource in most cloud/virt environments,
 # and because this impedes forensics, we are differing from the Fedora
 # default of having /tmp on tmpfs.
-echo "Disabling tmpfs for /tmp."
-systemctl mask tmp.mount
+# echo "Disabling tmpfs for /tmp."
+# systemctl mask tmp.mount
 
-cat <<EOL > /etc/sysconfig/kernel
+# cat <<EOL > /etc/sysconfig/kernel
 # UPDATEDEFAULT specifies if new-kernel-pkg should make
 # new kernels the default
-UPDATEDEFAULT=yes
+# UPDATEDEFAULT=yes
 
 # DEFAULTKERNEL specifies the default kernel package type
-DEFAULTKERNEL=kernel
-EOL
+# DEFAULTKERNEL=kernel
+# EOL
 
 # make sure firstboot doesn't start
-echo "RUN_FIRSTBOOT=NO" > /etc/sysconfig/firstboot
+# echo "RUN_FIRSTBOOT=NO" > /etc/sysconfig/firstboot
 
-echo "Fixing SELinux contexts."
-touch /var/log/cron
-touch /var/log/boot.log
-mkdir -p /var/cache/yum
-/usr/sbin/fixfiles -R -a restore
+# echo "Fixing SELinux contexts."
+# touch /var/log/cron
+# touch /var/log/boot.log
+# mkdir -p /var/cache/yum
+# /usr/sbin/fixfiles -R -a restore
 
 # reorder console entries
-sed -i 's/console=tty0/console=tty0 console=ttyS0,115200n8/' /boot/grub2/grub.cfg
+# sed -i 's/console=tty0/console=tty0 console=ttyS0,115200n8/' /boot/grub2/grub.cfg
 
 #echo "Zeroing out empty space."
 # This forces the filesystem to reclaim space from deleted files
@@ -161,10 +162,10 @@ sed -i 's/console=tty0/console=tty0 console=ttyS0,115200n8/' /boot/grub2/grub.cf
 # rm -f /var/tmp/zeros
 # echo "(Don't worry -- that out-of-space error was expected.)"
 
-dnf update -y
+# dnf update -y
 
-sed -i "s/^.*requiretty/#Defaults requiretty/" /etc/sudoers
-echo "PermitRootLogin yes" > /etc/ssh/sshd_config.d/allow-root-ssh.conf
+# sed -i "s/^.*requiretty/#Defaults requiretty/" /etc/sudoers
+# echo "PermitRootLogin yes" > /etc/ssh/sshd_config.d/allow-root-ssh.conf
 
 dnf clean all
 %end
