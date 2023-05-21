@@ -16,6 +16,8 @@
 # constraints documentation
 # https://www.packer.io/docs/templates/hcl_templates/variables#type-constraints for more info.
 
+# Documentantion - Packer: https://developer.hashicorp.com/packer/plugins/builders/proxmox
+
 variable "os_image" {
   type    = string
   default = "Rocky-x86_64-dvd.iso"

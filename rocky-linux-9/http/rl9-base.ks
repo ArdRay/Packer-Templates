@@ -1,4 +1,8 @@
+# Documentation - Rocky CIS: https://www.tenable.com/audits/CIS_Rocky_Linux_9_v1.0.0_L2_Server
+# Documentation - RHEL Kickstart: https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/installation_guide/sect-kickstart-syntax
+# 
 
+# Sets up the authentication options for the system
 authconfig --enableshadow --passalgo=sha512
 
 # Causes the installer to ignore the specified disks.
@@ -43,19 +47,20 @@ timezone Europe/Zurich
 # part / --fstype="xfs" --grow --size=6144
 # part swap --fstype="swap" --size=512
 
-part /dev/shm                                                                           # xccdf_org.ssgproject.content_rule_partition_for_dev_shm
-part /boot --size 512 --asprimary --fstype=ext4 --ondrive=sda
+part /dev/shm                                                                                               # xccdf_org.ssgproject.content_rule_partition_for_dev_shm
+part /boot --size 512 --asprimary --fstype=ext4 --ondrive=sda --label=boot
 part pv.1 --size 1 --grow --fstype=ext4 --ondrive=sda
 
 volgroup system --pesize=1024 pv.1
 
 logvol / --fstype ext4 --vgname system --size=8192 --name=root
-logvol /var --fstype ext4 --vgname system --size=2048 --name=var                        # xccdf_org.ssgproject.content_rule_partition_for_var
-logvol /home --fstype ext4 --vgname system --size=1024 --name=home                      # xccdf_org.ssgproject.content_rule_partition_for_home
-logvol /tmp --fstype ext4 --vgname system --size=1024 --name=tmp                        # xccdf_org.ssgproject.content_rule_partition_for_tmp
+logvol /var --fstype ext4 --vgname system --size=2048 --name=var --fsoptions="nodev"                        # xccdf_org.ssgproject.content_rule_partition_for_var
+logvol /home --fstype ext4 --vgname system --size=1024 --name=home --fsoptions="nodev"                      # xccdf_org.ssgproject.content_rule_partition_for_home
+logvol /tmp --fstype ext4 --vgname system --size=1024 --name=tmp --fsoptions="nodev,noexec,nosuid"          # xccdf_org.ssgproject.content_rule_partition_for_tmp
 logvol swap --vgname system --size=2048 --name=swap
-logvol /var/log --fstype ext4 --vgname system --size=2048 --name=log                    # xccdf_org.ssgproject.content_rule_partition_for_var_log
-logvol /var/tmp --fstype ext4 --vgname system --size=1024 --name=vartmp                 # xccdf_org.ssgproject.content_rule_partition_for_var_tmp
+logvol /var/log --fstype ext4 --vgname system --size=2048 --name=var_log --fsoptions="nodev"                # xccdf_org.ssgproject.content_rule_partition_for_var_log
+logvol /var/tmp --fstype ext4 --vgname system --size=1024 --name=var_tmp --fsoptions="nodev,nosuid,noexec"  # xccdf_org.ssgproject.content_rule_partition_for_var_tmp
+logvol /var/log/audit --fstype=ext4 --vgname=system --size=512 --name=var_log_audit --fsoptions="nodev"
 
 reboot
 
@@ -99,6 +104,10 @@ python3-libselinux
 -rt73usb-firmware
 -xorg-x11-drv-ati-firmware
 -zd1211-firmware
+
+# CIS compliance
+-gdm
+-xorg-x11-server-common
 %end
 
 %addon com_redhat_kdump --disable
@@ -165,7 +174,9 @@ python3-libselinux
 # dnf update -y
 
 # sed -i "s/^.*requiretty/#Defaults requiretty/" /etc/sudoers
-# echo "PermitRootLogin yes" > /etc/ssh/sshd_config.d/allow-root-ssh.conf
+
+# Temporarily - For provisioning
+echo "PermitRootLogin yes" > /etc/ssh/sshd_config.d/allow-root-ssh.conf
 
 dnf clean all
 %end
