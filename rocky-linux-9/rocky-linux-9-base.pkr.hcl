@@ -133,6 +133,7 @@ build {
 
   provisioner "shell" {
     name = "rocky-linux-9-base-test"
+    execute_command = "echo '${var.ssh_password}'|{{.Vars}} sudo -S -E bash '{{.Path}}'"
     inline = [
       "yum install -y cloud-init qemu-guest-agent cloud-utils-growpart gdisk", 
       "systemctl enable qemu-guest-agent", 

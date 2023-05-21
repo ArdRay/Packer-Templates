@@ -1,5 +1,5 @@
 ---
-- name: "Setup.yml"
+- name: "initial-setup.yml"
   hosts: localhost
   gather_facts: yes
 
@@ -21,3 +21,17 @@
       - wget
       state: latest      
     when: ansible_distribution == "Rocky"
+  
+  - name: Create a new regular user with sudo privileges
+    user:
+      name: "ard"
+      state: present
+      groups: wheel
+      append: true
+      create_home: true
+  
+  - name: Set authorized key for remote user
+    ansible.posix.authorized_key:
+      user: "ard"
+      state: present
+      key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICquToJ6AELUkLfQLWilvf3uL0O8TJuc5X3p97vGZY96"

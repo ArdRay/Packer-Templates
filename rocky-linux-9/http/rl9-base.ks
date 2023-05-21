@@ -1,9 +1,7 @@
 # Documentation - Rocky CIS: https://www.tenable.com/audits/CIS_Rocky_Linux_9_v1.0.0_L2_Server
 # Documentation - RHEL Kickstart: https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/installation_guide/sect-kickstart-syntax
-# 
 
 # Sets up the authentication options for the system
-#authconfig --enableshadow --passalgo=sha512
 authselect minimal
 
 # Causes the installer to ignore the specified disks.
@@ -28,6 +26,7 @@ lang en_US.UTF-8
 network  --bootproto=dhcp --ipv6=auto --activate --onboot=yes
 #network  --hostname=test.int.mxard.cloud
 repo --name="AppStream" --baseurl=file:///run/install/repo/AppStream
+repo --name="EPEL" --baseurl=https://dl.fedoraproject.org/pub/epel/9/Everything/x86_64/Packages/
 
 # Root password
 rootpw --iscrypted $6$eof03f$Vg.Du8K94G23m7tQz9Op2l3g85ncPCmcZmSTg1dR770kFsdtswMrI9o2/6YNAuRtW4w3VkkTmcveAkEvbrzdk1
@@ -70,13 +69,13 @@ reboot
 @^minimal-environment
 openssh-server
 openssh-clients
-sudo
-kexec-tools
+epel-release
 curl
 
-# allow for ansible
+# Ansible
 python3
 python3-libselinux
+ansible
 
 # unnecessary firmware
 -aic94xx-firmware
@@ -115,7 +114,6 @@ python3-libselinux
 %end
 
 %post
-
 
 # this is installed by default but we don't need it in virt
 # echo "Removing linux-firmware package."
@@ -182,8 +180,3 @@ echo "PermitRootLogin yes" > /etc/ssh/sshd_config.d/allow-root-ssh.conf
 dnf clean all
 %end
 
-# %anaconda
-# pwpolicy root --minlen=6 --minquality=1 --notstrict --nochanges --notempty
-# pwpolicy user --minlen=6 --minquality=1 --notstrict --nochanges --emptyok
-# pwpolicy luks --minlen=6 --minquality=1 --notstrict --nochanges --notempty
-# %end
