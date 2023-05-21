@@ -24,7 +24,7 @@ lang en_US.UTF-8
 
 # Network information
 network  --bootproto=dhcp --ipv6=auto --activate --onboot=yes
-repo --name="AppStream" --baseurl=https://dl.rockylinux.org/pub/rocky/9.2/AppStream/os/ --install
+repo --name="AppStream" --baseurl=https://dl.rockylinux.org/pub/rocky/9.2/AppStream/kickstart/ --install
 repo --name="EPEL" --baseurl=https://dl.fedoraproject.org/pub/epel/9/Everything/x86_64/ --install
 
 # Root password
