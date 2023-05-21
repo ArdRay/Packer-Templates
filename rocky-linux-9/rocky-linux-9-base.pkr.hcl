@@ -132,6 +132,7 @@ build {
   sources = ["source.proxmox.rocky-linux-9-base"]
 
   provisioner "shell" {
+    name = "rocky-linux-9-base-test"
     inline = [
       "yum install -y cloud-init qemu-guest-agent cloud-utils-growpart gdisk", 
       "systemctl enable qemu-guest-agent", 
@@ -144,7 +145,10 @@ build {
       "passwd -l root", 
       "rm -f /etc/ssh/ssh_config.d/allow-root-ssh.conf"
     ]
-    only   = ["proxmox"]
+  }
+
+  provisioner "ansible-local" {
+    playbook_file = "./ansible/initial-setup.yml"
   }
 
 }

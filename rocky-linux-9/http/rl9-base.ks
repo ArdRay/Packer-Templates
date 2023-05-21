@@ -3,7 +3,8 @@
 # 
 
 # Sets up the authentication options for the system
-authconfig --enableshadow --passalgo=sha512
+#authconfig --enableshadow --passalgo=sha512
+authselect minimal
 
 # Causes the installer to ignore the specified disks.
 ignoredisk --only-use=sda
