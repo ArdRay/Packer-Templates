@@ -25,8 +25,8 @@ lang en_US.UTF-8
 # Network information
 network  --bootproto=dhcp --ipv6=auto --activate --onboot=yes
 #network  --hostname=test.int.mxard.cloud
-repo --name="AppStream" --baseurl=file:///run/install/repo/AppStream
-repo --name="EPEL" --baseurl=https://dl.fedoraproject.org/pub/epel/9/Everything/x86_64/Packages/
+repo --name="AppStream" --baseurl=file:///run/install/repo/AppStream --install
+repo --name="EPEL" --baseurl=https://dl.fedoraproject.org/pub/epel/9/Everything/x86_64/ --install
 
 # Root password
 rootpw --iscrypted $6$eof03f$Vg.Du8K94G23m7tQz9Op2l3g85ncPCmcZmSTg1dR770kFsdtswMrI9o2/6YNAuRtW4w3VkkTmcveAkEvbrzdk1
@@ -61,9 +61,7 @@ logvol swap --vgname system --size=2048 --name=swap
 logvol /var/log --fstype ext4 --vgname system --size=2048 --name=var_log --fsoptions="nodev"                # xccdf_org.ssgproject.content_rule_partition_for_var_log
 logvol /var/tmp --fstype ext4 --vgname system --size=1024 --name=var_tmp --fsoptions="nodev,nosuid,noexec"  # xccdf_org.ssgproject.content_rule_partition_for_var_tmp
 logvol /var/log/audit --fstype=ext4 --vgname=system --size=512 --name=var_log_audit --fsoptions="nodev"
-
 reboot
-
 
 %packages
 @^minimal-environment
