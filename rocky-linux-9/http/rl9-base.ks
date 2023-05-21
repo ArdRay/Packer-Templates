@@ -24,8 +24,7 @@ lang en_US.UTF-8
 
 # Network information
 network  --bootproto=dhcp --ipv6=auto --activate --onboot=yes
-#network  --hostname=test.int.mxard.cloud
-repo --name="AppStream" --baseurl=file:///run/install/repo/AppStream --install
+repo --name="AppStream" --baseurl=https://dl.rockylinux.org/pub/rocky/9.2/AppStream/x86_64/ --install
 repo --name="EPEL" --baseurl=https://dl.fedoraproject.org/pub/epel/9/Everything/x86_64/ --install
 
 # Root password
