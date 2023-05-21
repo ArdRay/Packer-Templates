@@ -112,6 +112,9 @@ ansible
 
 %post
 
+# AppStream trusted GPG key
+rpm --import https://dl.rockylinux.org/pub/rocky/RPM-GPG-KEY-Rocky-9
+
 # this is installed by default but we don't need it in virt
 # echo "Removing linux-firmware package."
 # yum -C -y remove linux-firmware
