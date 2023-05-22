@@ -24,6 +24,8 @@ lang en_US.UTF-8
 
 # Network information
 network  --bootproto=dhcp --ipv6=auto --activate --onboot=yes
+
+# Repo information
 repo --name="AppStream" --baseurl=https://dl.rockylinux.org/pub/rocky/9.2/AppStream/x86_64/kickstart/ --install
 repo --name="EPEL" --baseurl=https://dl.fedoraproject.org/pub/epel/9/Everything/x86_64/ --install
 
@@ -37,15 +39,12 @@ firstboot --disabled
 skipx
 
 # System services
-services --disabled="kdump" --enabled="sshd,rsyslog,chronyd"
+services --disabled="kdump" --enabled="sshd,rsyslog,chronyd,qemu-guest-agent"
 
 # System timezone
 timezone Europe/Zurich
 
 # Disk partitioning information
-# part / --fstype="xfs" --grow --size=6144
-# part swap --fstype="swap" --size=512
-
 part /dev/shm                                                                                               # xccdf_org.ssgproject.content_rule_partition_for_dev_shm
 part /boot --size 512 --asprimary --fstype=ext4 --ondrive=sda --label=boot
 part pv.1 --size 1 --grow --fstype=ext4 --ondrive=sda
@@ -64,6 +63,7 @@ reboot
 
 %packages
 @^minimal-environment
+qemu-guest-agent
 openssh-server
 openssh-clients
 epel-release
@@ -101,10 +101,12 @@ ansible
 -rt73usb-firmware
 -xorg-x11-drv-ati-firmware
 -zd1211-firmware
+-linux-firmware
+-avahi*
 
 # CIS compliance
 -gdm
--xorg-x11-server-common
+-xorg-x11*
 %end
 
 %addon com_redhat_kdump --disable
@@ -115,17 +117,9 @@ ansible
 # AppStream trusted GPG key
 rpm --import https://dl.rockylinux.org/pub/rocky/RPM-GPG-KEY-Rocky-9
 
-# this is installed by default but we don't need it in virt
-# echo "Removing linux-firmware package."
-# yum -C -y remove linux-firmware
-
 # Remove firewalld; it is required to be present for install/image building.
 # echo "Removing firewalld."
 # yum -C -y remove firewalld --setopt="clean_requirements_on_remove=1"
-
-# remove avahi and networkmanager
-# echo "Removing avahi/zeroconf and NetworkManager"
-# yum -C -y remove avahi\* 
 
 # echo -n "Getty fixes"
 # although we want console output going to the serial console, we don't

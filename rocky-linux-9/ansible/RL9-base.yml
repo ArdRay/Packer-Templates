@@ -1,0 +1,60 @@
+---
+- name: "RL9-base.yml"
+  hosts: localhost
+  gather_facts: true
+
+  tasks:
+    - name: Install packages (Rocky)
+      ansible.builtin.dnf:
+        name:
+          - bash-completion >= 2.11
+          - curl >= 7.76
+          - git >=2.39
+          - rsync >= 3.2.3
+          - vim-enhanced >= 8.2
+          - wget >= 1.21
+
+    - name: Disable root
+      ansible.builtin.user:
+        name: root
+        password_lock: true
+
+    - name: Disable root SSH login
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^PermitRootLogin'
+        line: 'PermitRootLogin no'
+
+    - name: Disable password authentication
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^PasswordAuthentication'
+        line: 'PasswordAuthentication no'
+
+    - name: Cleanup
+      ansible.builtin.shell: |
+        shred -u /etc/ssh/*_key /etc/ssh/*_key.pub
+        rm -f /var/run/utmp /var/log/lastlog /var/log/wtmp /var/log/btmp /etc/ssh/ssh_config.d/allow-root-ssh.conf
+        rm -rf /tmp/* /var/tmp/* /root/*ks
+        unset HISTFILE; rm -rf /home/*/.*history /root/.*history
+
+    - name: Create a new regular user with sudo privileges
+      ansible.builtin.user:
+        name: ard
+        password: $6$rounds=656000$WKGTJBEg94pnXviu$pbl.v0bsnQd/z21V06PBc22Y1CAHRUNYokVnk/Kt9GTsSSPFljRQMSch85GsgN8eLvQg8wEbINIsDiCj7x0a80
+        shell: /bin/bash
+        create_home: true
+        state: present
+
+    - name: Set authorized key for remote user
+      ansible.posix.authorized_key:
+        user: ard
+        state: present
+        key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICquToJ6AELUkLfQLWilvf3uL0O8TJuc5X3p97vGZY96
+
+    - name: Add user to sudoers without password prompt
+      ansible.builtin.lineinfile:
+        dest: /etc/sudoers
+        line: "{{ username }} ALL=(ALL) NOPASSWD:ALL"
+        validate: 'visudo -cf %s'
+        insertafter: "# User privilege specification"

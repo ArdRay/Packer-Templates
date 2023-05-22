@@ -75,11 +75,6 @@ variable "template_name" {
   default = "RL9-Template"
 }
 
-variable "version" {
-  type    = string
-  default = ""
-}
-
 # source blocks are generated from your builders; a source can be referenced in
 # build blocks. A build block runs provisioner and post-processors on a
 # source. Read the documentation for source blocks here:
@@ -122,7 +117,7 @@ source "proxmox" "rocky-linux-9-base" {
   unmount_iso          = true
   
   vm_id                = "140"
-  vm_name              = "rocky-linux-9-test"
+  vm_name              = "rocky-linux-9-build"
 }
 
 # a build block invokes sources and runs provisioning steps on them. The
@@ -130,23 +125,6 @@ source "proxmox" "rocky-linux-9-base" {
 # https://www.packer.io/docs/templates/hcl_templates/blocks/build
 build {
   sources = ["source.proxmox.rocky-linux-9-base"]
-
-  provisioner "shell" {
-    name = "rocky-linux-9-base-test"
-    execute_command = "echo '${var.ssh_password}'|{{.Vars}} sudo -S -E bash '{{.Path}}'"
-    inline = [
-      "yum install -y cloud-init qemu-guest-agent cloud-utils-growpart gdisk", 
-      "systemctl enable qemu-guest-agent", 
-      "shred -u /etc/ssh/*_key /etc/ssh/*_key.pub", 
-      "rm -f /var/run/utmp /var/log/lastlog /var/log/wtmp /var/log/btmp", 
-      "rm -rf /tmp/* /var/tmp/*", 
-      "unset HISTFILE; rm -rf /home/*/.*history /root/.*history", 
-      "rm -f /root/*ks", 
-      "passwd -d root", 
-      "passwd -l root", 
-      "rm -f /etc/ssh/ssh_config.d/allow-root-ssh.conf"
-    ]
-  }
 
   provisioner "ansible-local" {
     playbook_file = "./ansible/initial-setup.yml"
