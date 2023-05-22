@@ -127,7 +127,7 @@ build {
   sources = ["source.proxmox.rocky-linux-9-base"]
 
   provisioner "ansible-local" {
-    playbook_file = "./ansible/initial-setup.yml"
+    playbook_file = "./ansible/RL9-base.yml"
   }
 
 }
