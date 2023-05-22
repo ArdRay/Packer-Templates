@@ -4,7 +4,7 @@
   gather_facts: true
 
   tasks:
-    - name: Install packages (Rocky)
+    - name: Install packages
       ansible.builtin.dnf:
         name:
           - bash-completion >= 2.11
@@ -33,9 +33,8 @@
 
     - name: Cleanup
       ansible.builtin.shell: |
-        shred -u /etc/ssh/*_key /etc/ssh/*_key.pub
+        shred -u /etc/ssh/*_key /etc/ssh/*_key.pub /root/*ks
         rm -f /var/run/utmp /var/log/lastlog /var/log/wtmp /var/log/btmp /etc/ssh/ssh_config.d/allow-root-ssh.conf
-        rm -rf /tmp/* /var/tmp/* /root/*ks
         unset HISTFILE; rm -rf /home/*/.*history /root/.*history
 
     - name: Create a new regular user with sudo privileges
