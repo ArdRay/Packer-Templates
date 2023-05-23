@@ -45,20 +45,20 @@ services --disabled="kdump" --enabled="sshd,rsyslog,chronyd,qemu-guest-agent"
 timezone Europe/Zurich
 
 # Disk partitioning information
-part /dev/shm                                                                                               # xccdf_org.ssgproject.content_rule_partition_for_dev_shm
+part /dev/shm --fsoptions="nodev,nosuid,noexec"
 part /boot --size 512 --asprimary --fstype=ext4 --ondrive=sda --label=boot
 part pv.1 --size 1 --grow --fstype=ext4 --ondrive=sda
 
 volgroup system --pesize=1024 pv.1
 
 logvol / --fstype ext4 --vgname system --size=8192 --name=root
-logvol /var --fstype ext4 --vgname system --size=2048 --name=var --fsoptions="nodev"                        # xccdf_org.ssgproject.content_rule_partition_for_var
-logvol /home --fstype ext4 --vgname system --size=1024 --name=home --fsoptions="nodev"                      # xccdf_org.ssgproject.content_rule_partition_for_home
-logvol /tmp --fstype ext4 --vgname system --size=1024 --name=tmp --fsoptions="nodev,noexec,nosuid"          # xccdf_org.ssgproject.content_rule_partition_for_tmp
+logvol /var --fstype ext4 --vgname system --size=2048 --name=var --fsoptions="nodev,nosuid"
+logvol /home --fstype ext4 --vgname system --size=1024 --name=home --fsoptions="nodev,nosuid"
+logvol /tmp --fstype ext4 --vgname system --size=1024 --name=tmp --fsoptions="nodev,noexec,nosuid"
 logvol swap --vgname system --size=2048 --name=swap
-logvol /var/log --fstype ext4 --vgname system --size=2048 --name=var_log --fsoptions="nodev"                # xccdf_org.ssgproject.content_rule_partition_for_var_log
-logvol /var/tmp --fstype ext4 --vgname system --size=1024 --name=var_tmp --fsoptions="nodev,nosuid,noexec"  # xccdf_org.ssgproject.content_rule_partition_for_var_tmp
-logvol /var/log/audit --fstype=ext4 --vgname=system --size=512 --name=var_log_audit --fsoptions="nodev"
+logvol /var/log --fstype ext4 --vgname system --size=2048 --name=var_log --fsoptions="nodev,noexec,nosuid"
+logvol /var/tmp --fstype ext4 --vgname system --size=1024 --name=var_tmp --fsoptions="nodev,nosuid,noexec"
+logvol /var/log/audit --fstype=ext4 --vgname=system --size=512 --name=var_log_audit --fsoptions="nodev,noexec,nosuid"
 reboot
 
 %packages
@@ -102,11 +102,31 @@ ansible
 -xorg-x11-drv-ati-firmware
 -zd1211-firmware
 -linux-firmware
--avahi*
 
 # CIS compliance
 -gdm
 -xorg-x11*
+-avahi*
+-cups
+-dhcp-server
+-bind
+-vsftpd
+-tftp-server
+-httpd
+-dovecot
+-cyrus-imapd
+-samba
+-squid
+-net-snmp
+-telnet-server
+-dnsmasq
+-nfs-utils
+-rpcbind
+-rsync-daemon
+-telnet
+-openldap-clients
+-tftp
+-ftp
 %end
 
 %addon com_redhat_kdump --disable
