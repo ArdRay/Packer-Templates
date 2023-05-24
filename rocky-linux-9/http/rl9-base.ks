@@ -68,6 +68,7 @@ openssh-server
 openssh-clients
 epel-release
 curl
+htop
 
 # Ansible
 python3

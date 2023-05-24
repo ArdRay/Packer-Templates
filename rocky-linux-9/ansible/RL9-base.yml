@@ -54,6 +54,6 @@
     - name: Add user to sudoers without password prompt
       ansible.builtin.lineinfile:
         dest: /etc/sudoers
-        line: "{{ username }} ALL=(ALL) NOPASSWD:ALL"
+        line: "ard ALL=(ALL) NOPASSWD:ALL"
         validate: 'visudo -cf %s'
         insertafter: "# User privilege specification"
