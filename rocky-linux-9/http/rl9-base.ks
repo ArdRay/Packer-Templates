@@ -53,7 +53,7 @@ volgroup system --pesize=1024 pv.1
 
 logvol / --fstype ext4 --vgname system --size=8192 --name=root
 logvol /var --fstype ext4 --vgname system --size=2048 --name=var --fsoptions="nodev,nosuid"
-logvol /home --fstype ext4 --vgname system --size=1024 --name=home --fsoptions="nodev,nosuid"
+logvol /home --fstype ext4 --vgname system --size=1024 --name=home # --fsoptions="nodev,nosuid"
 logvol /tmp --fstype ext4 --vgname system --size=1024 --name=tmp --fsoptions="nodev,noexec,nosuid"
 logvol swap --vgname system --size=2048 --name=swap
 logvol /var/log --fstype ext4 --vgname system --size=2048 --name=var_log --fsoptions="nodev,noexec,nosuid"
@@ -67,13 +67,16 @@ qemu-guest-agent
 openssh-server
 openssh-clients
 epel-release
-curl
-htop
 
 # Ansible
 python3
 python3-libselinux
 ansible
+
+# Utils
+curl
+unzip
+net-tools
 
 # unnecessary firmware
 -aic94xx-firmware
@@ -137,6 +140,8 @@ ansible
 
 # AppStream trusted GPG key
 rpm --import https://dl.rockylinux.org/pub/rocky/RPM-GPG-KEY-Rocky-9
+# EPEL 9 GPG key
+rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-9
 
 # Remove firewalld; it is required to be present for install/image building.
 # echo "Removing firewalld."
