@@ -51,14 +51,14 @@ part pv.1 --size 1 --grow --fstype=ext4 --ondrive=sda
 
 volgroup system --pesize=1024 pv.1
 
-logvol / --fstype ext4 --vgname system --size=8192 --name=root
+logvol / --fstype ext4 --vgname system --size=4096 --name=root
 logvol /var --fstype ext4 --vgname system --size=2048 --name=var --fsoptions="nodev,nosuid"
-logvol /home --fstype ext4 --vgname system --size=1024 --name=home # --fsoptions="nodev,nosuid"
-logvol /tmp --fstype ext4 --vgname system --size=1024 --name=tmp --fsoptions="nodev,noexec,nosuid"
+logvol /home --fstype ext4 --vgname system --size=1024 --name=home --fsoptions="nodev,nosuid"
+logvol /tmp --fstype ext4 --vgname system --size=1024 --name=tmp --fsoptions="nodev,nosuid,noexec"
 logvol swap --vgname system --size=2048 --name=swap
-logvol /var/log --fstype ext4 --vgname system --size=2048 --name=var_log --fsoptions="nodev,noexec,nosuid"
+logvol /var/log --fstype ext4 --vgname system --size=8192 --name=var_log --fsoptions="nodev,nosuid,noexec"
 logvol /var/tmp --fstype ext4 --vgname system --size=1024 --name=var_tmp --fsoptions="nodev,nosuid,noexec"
-logvol /var/log/audit --fstype=ext4 --vgname=system --size=512 --name=var_log_audit --fsoptions="nodev,noexec,nosuid"
+logvol /var/log/audit --fstype=ext4 --vgname=system --size=512 --name=var_log_audit --fsoptions="nodev,nosuid,noexec"
 reboot
 
 %packages
@@ -143,60 +143,10 @@ rpm --import https://dl.rockylinux.org/pub/rocky/RPM-GPG-KEY-Rocky-9
 # EPEL 9 GPG key
 rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-9
 
-# Remove firewalld; it is required to be present for install/image building.
-# echo "Removing firewalld."
-# yum -C -y remove firewalld --setopt="clean_requirements_on_remove=1"
-
-# echo -n "Getty fixes"
-# although we want console output going to the serial console, we don't
-# actually have the opportunity to login there. FIX.
-# we don't really need to auto-spawn _any_ gettys.
-# sed -i '/^#NAutoVTs=.*/ a\
-# NAutoVTs=0' /etc/systemd/logind.conf
-
-# set virtual-guest as default profile for tuned
-# echo "virtual-guest" > /etc/tuned/active_profile
-
-# Because memory is scarce resource in most cloud/virt environments,
-# and because this impedes forensics, we are differing from the Fedora
-# default of having /tmp on tmpfs.
-# echo "Disabling tmpfs for /tmp."
-# systemctl mask tmp.mount
-
-# cat <<EOL > /etc/sysconfig/kernel
-# UPDATEDEFAULT specifies if new-kernel-pkg should make
-# new kernels the default
-# UPDATEDEFAULT=yes
-
-# DEFAULTKERNEL specifies the default kernel package type
-# DEFAULTKERNEL=kernel
-# EOL
-
-# make sure firstboot doesn't start
-# echo "RUN_FIRSTBOOT=NO" > /etc/sysconfig/firstboot
-
-# echo "Fixing SELinux contexts."
-# touch /var/log/cron
-# touch /var/log/boot.log
-# mkdir -p /var/cache/yum
-# /usr/sbin/fixfiles -R -a restore
-
-# reorder console entries
-# sed -i 's/console=tty0/console=tty0 console=ttyS0,115200n8/' /boot/grub2/grub.cfg
-
-#echo "Zeroing out empty space."
-# This forces the filesystem to reclaim space from deleted files
-# dd bs=1M if=/dev/zero of=/var/tmp/zeros || :
-# rm -f /var/tmp/zeros
-# echo "(Don't worry -- that out-of-space error was expected.)"
-
-# dnf update -y
-
-# sed -i "s/^.*requiretty/#Defaults requiretty/" /etc/sudoers
-
 # Temporarily - For provisioning
 echo "PermitRootLogin yes" > /etc/ssh/sshd_config.d/allow-root-ssh.conf
 
+dnf update -y
 dnf clean all
 %end
 
