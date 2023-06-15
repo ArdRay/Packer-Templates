@@ -37,11 +37,6 @@ variable "proxmox_storage_pool" {
   default = "local-lvm"
 }
 
-variable "proxmox_storage_pool_type" {
-  type    = string
-  default = "lvm-thin"
-}
-
 variable "ssh_password" {
   type    = string
   sensitive = true
@@ -62,7 +57,7 @@ variable "template_name" {
 # source. Read the documentation for source blocks here:
 # https://www.packer.io/docs/templates/hcl_templates/blocks/source
 
-source "proxmox" "rocky-linux-9-base" {
+source "proxmox-iso" "rocky-linux-9-base" {
   username            = "${var.proxmox_api_token_id}"
   token               = "${var.proxmox_api_token_secret}"
   boot_command        = ["<tab> text inst.ks=https://raw.githubusercontent.com/ArdRay/packer_templates/master/rocky-linux-9/http/rl9-base.ks<enter><wait>"]
@@ -73,7 +68,6 @@ source "proxmox" "rocky-linux-9-base" {
     disk_size         = "32G"
     format            = "${var.proxmox_storage_format}"
     storage_pool      = "${var.proxmox_storage_pool}"
-    storage_pool_type = "${var.proxmox_storage_pool_type}"
     type              = "scsi"
   }
   http_directory           = "http"
@@ -106,7 +100,7 @@ source "proxmox" "rocky-linux-9-base" {
 # documentation for build blocks can be found here:
 # https://www.packer.io/docs/templates/hcl_templates/blocks/build
 build {
-  sources = ["source.proxmox.rocky-linux-9-base"]
+  sources = ["source.proxmox-iso.rocky-linux-9-base"]
 
   provisioner "ansible-local" {
     playbook_file = "./ansible/RL9-base.yml"
