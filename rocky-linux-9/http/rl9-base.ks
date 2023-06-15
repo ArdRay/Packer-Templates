@@ -56,8 +56,8 @@ logvol /var --fstype ext4 --vgname system --size=2048 --name=var --fsoptions="no
 logvol /home --fstype ext4 --vgname system --size=1024 --name=home --fsoptions="nodev,nosuid"
 logvol /tmp --fstype ext4 --vgname system --size=1024 --name=tmp --fsoptions="nodev,nosuid,noexec"
 logvol swap --vgname system --size=2048 --name=swap
-logvol /var/log --fstype ext4 --vgname system --size=8192 --name=var_log --fsoptions="nodev,nosuid,noexec"
-logvol /var/tmp --fstype ext4 --vgname system --size=1024 --name=var_tmp --fsoptions="nodev,nosuid,noexec"
+logvol /var/log --fstype ext4 --vgname system --size=1024 --name=var_log --fsoptions="nodev,nosuid,noexec"
+logvol /var/tmp --fstype ext4 --vgname system --size=16384 --name=var_tmp --fsoptions="nodev,nosuid,noexec"
 logvol /var/log/audit --fstype=ext4 --vgname=system --size=512 --name=var_log_audit --fsoptions="nodev,nosuid,noexec"
 reboot
 
