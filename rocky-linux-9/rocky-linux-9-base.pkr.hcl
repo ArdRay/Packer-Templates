@@ -73,7 +73,7 @@ source "proxmox-iso" "rocky-linux-9-base" {
   http_directory           = "http"
   insecure_skip_tls_verify = false
   iso_file                 = "${var.proxmox_iso_pool}/${var.os_image}"
-  memory                   = "8192"
+  memory                   = "4096"
   network_adapters {
     model  = "virtio"  
     bridge = "vmbr0"
