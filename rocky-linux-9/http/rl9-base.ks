@@ -52,8 +52,8 @@ part pv.1 --size 1 --grow --fstype=ext4 --ondrive=sda
 volgroup system --pesize=1024 pv.1
 
 logvol / --fstype ext4 --vgname system --size=4096 --name=root
-logvol /var --fstype ext4 --vgname system --size=2048 --name=var --fsoptions="nodev,nosuid"
-logvol /home --fstype ext4 --vgname system --size=16384 --name=home --fsoptions="nodev,nosuid"
+logvol /var --fstype ext4 --vgname system --size=16384 --name=var --fsoptions="nodev,nosuid"
+logvol /home --fstype ext4 --vgname system --size=2048 --name=home --fsoptions="nodev,nosuid"
 logvol /tmp --fstype ext4 --vgname system --size=1024 --name=tmp --fsoptions="nodev,nosuid,noexec"
 logvol swap --vgname system --size=2048 --name=swap
 logvol /var/log --fstype ext4 --vgname system --size=1024 --name=var_log --fsoptions="nodev,nosuid,noexec"
