@@ -57,3 +57,8 @@
         line: "ard ALL=(ALL) NOPASSWD:ALL"
         validate: 'visudo -cf %s'
         insertafter: "# User privilege specification"
+
+    - name: Remove provisioning files
+      ansible.builtin.file:
+        path: /etc/ssh/sshd_config.d/allow-root-ssh.conf
+        state: absent
